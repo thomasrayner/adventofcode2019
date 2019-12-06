@@ -7,12 +7,11 @@ data.pop();
 
 var count = 0;
 var total = 0;
-var steps = 0;
 
 class Planet {
     name: string;
-    parent: string;
-    children: string[];
+    parent: any; // will be a string for a moment, then a Planet
+    children: Planet[];
     orbits: number;
     constructor(name: string, parent: any) {
         this.name = name;
@@ -22,7 +21,7 @@ class Planet {
     }
 }
 
-function findHierarchy(planet: any, list = new Array()): any {
+function findHierarchy(planet: any, list = new Array()):number {
     if (planet.parent == undefined) {
         return count
     } else {
@@ -32,9 +31,18 @@ function findHierarchy(planet: any, list = new Array()): any {
     }
 }
 
+function findDistanceFromPlanet(planet: any): number {
+    if (planet.parent.name == crossingAt) {
+        return steps;
+    } else {
+        steps++
+        return findDistanceFromPlanet(planet.parent)
+    }
+}
+
 var objects = data.map((el: string) => new Planet(el[1], el[0]))
 objects.push(new Planet('COM', undefined));
-objects.forEach((el: any) => (el.parent = objects.find((n: any) => n.name == el.parent)))
+objects.forEach((el: any) => (el.parent = objects.find((n: any) => n.name == el.parent)))   // replace parent string with parent Planet
 objects.forEach((el: any) => (el.children.push(objects.filter((n: any) => n.parent == el))))
 objects.forEach((el: any) => {
     count = 0;
@@ -52,16 +60,10 @@ findHierarchy(you, listYou)
 findHierarchy(san, listSan)
 listSan = listSan.map(el => el.name)
 listYou = listYou.map(el => el.name)
-var crossingAt = listYou.filter(value => listSan.includes(value)).shift()
-function rec(planet: any): any {
-    if (planet.parent.name == crossingAt) {
-        return steps;
-    } else {
-        steps++
-        return rec(planet.parent)
-    }
-}
-rec(you)
-rec(san)
+var crossingAt = listYou.filter(value => listSan.includes(value)).shift() // don't need COM
+
+var steps = 0;
+findDistanceFromPlanet(you)
+findDistanceFromPlanet(san)
 
 console.log('Pt 2: ' + steps)

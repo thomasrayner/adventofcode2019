@@ -6,7 +6,6 @@ var data = fs.readFileSync(filename, 'utf-8').split('\n').map(function (el) { re
 data.pop();
 var count = 0;
 var total = 0;
-var steps = 0;
 var Planet = /** @class */ (function () {
     function Planet(name, parent) {
         this.name = name;
@@ -27,9 +26,18 @@ function findHierarchy(planet, list) {
         return findHierarchy(planet.parent, list);
     }
 }
+function findDistanceFromPlanet(planet) {
+    if (planet.parent.name == crossingAt) {
+        return steps;
+    }
+    else {
+        steps++;
+        return findDistanceFromPlanet(planet.parent);
+    }
+}
 var objects = data.map(function (el) { return new Planet(el[1], el[0]); });
 objects.push(new Planet('COM', undefined));
-objects.forEach(function (el) { return (el.parent = objects.find(function (n) { return n.name == el.parent; })); });
+objects.forEach(function (el) { return (el.parent = objects.find(function (n) { return n.name == el.parent; })); }); // replace parent string with parent Planet
 objects.forEach(function (el) { return (el.children.push(objects.filter(function (n) { return n.parent == el; }))); });
 objects.forEach(function (el) {
     count = 0;
@@ -45,17 +53,9 @@ findHierarchy(you, listYou);
 findHierarchy(san, listSan);
 listSan = listSan.map(function (el) { return el.name; });
 listYou = listYou.map(function (el) { return el.name; });
-var crossingAt = listYou.filter(function (value) { return listSan.includes(value); }).shift();
-function rec(planet) {
-    if (planet.parent.name == crossingAt) {
-        return steps;
-    }
-    else {
-        steps++;
-        return rec(planet.parent);
-    }
-}
-rec(you);
-rec(san);
+var crossingAt = listYou.filter(function (value) { return listSan.includes(value); }).shift(); // don't need COM
+var steps = 0;
+findDistanceFromPlanet(you);
+findDistanceFromPlanet(san);
 console.log('Pt 2: ' + steps);
 //# sourceMappingURL=main.js.map
