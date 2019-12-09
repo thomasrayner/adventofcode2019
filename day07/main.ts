@@ -9,6 +9,7 @@ function day7(inTape:number[], userInput:number[]):number {
     var runTape = [...inTape];
     var index = 0;
     var scoopOver = new Map([[1, 4], [2, 4], [3, 2], [4, 2], [5, 3], [6, 3], [7, 4], [8, 4], [99, 0]]);
+    var inputGiven = false;
     
     while (true) {
         var scoop = 0;
@@ -19,7 +20,7 @@ function day7(inTape:number[], userInput:number[]):number {
         var a = b = c = 0;
 
         if (opcode > 100) {
-            parameterMode = true;
+            parameterMode = true;   // immediate mode
             opcode = parseInt(rawOpcode.substring((rawOpcode.length - 2)));
             var c = rawOpcode.length >= 3 ? parseInt(rawOpcode.substring((rawOpcode.length - 3), (rawOpcode.length - 2))) : 0;
             var b = rawOpcode.length >= 4 ? parseInt(rawOpcode.substring((rawOpcode.length - 4), (rawOpcode.length - 3))) : 0;
@@ -55,7 +56,8 @@ function day7(inTape:number[], userInput:number[]):number {
             }
             case 3: {
                 // input
-                runTape[runTape[index + 1]] = userInput.shift() as number;
+                runTape[runTape[index + 1]] = inputGiven ? userInput[1] : userInput[0]; //userInput.shift() as number;
+                inputGiven = true;
                 break;
             }
             case 4: {
@@ -137,6 +139,24 @@ function findHighestSignal1(newTape:any) {
     return max;
 };
 
+function findHighestSignal2(newTape: any) {
+    var program = Object.assign([], newTape);;
+    let max = 0;
+    for (const [a, b, c, d, e] of combinations(5, 9)) {
+        const oa: number = day7(program, [a, 0]);
+        const ob: number = day7(program, [b, oa]);
+        const oc: number = day7(program, [c, ob]);
+        const od: number = day7(program, [d, oc]);
+        const oe: number = day7(program, [e, od]);
+        if (oe > max) {
+            max = oe;
+        }
+    }
+    return max;
+};
+
 
 var highest1 = findHighestSignal1(tape);
 console.log("Pt 1: " + highest1);
+var highest2 = findHighestSignal2(tape);
+console.log("Pt 2: " + highest2);

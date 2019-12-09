@@ -66,6 +66,7 @@ function day7(inTape, userInput) {
     var runTape = __spread(inTape);
     var index = 0;
     var scoopOver = new Map([[1, 4], [2, 4], [3, 2], [4, 2], [5, 3], [6, 3], [7, 4], [8, 4], [99, 0]]);
+    var inputGiven = false;
     while (true) {
         var scoop = 0;
         var pointerChanged = false;
@@ -74,7 +75,7 @@ function day7(inTape, userInput) {
         var parameterMode = false; // 0 = position mode
         var a = b = c = 0;
         if (opcode > 100) {
-            parameterMode = true;
+            parameterMode = true; // immediate mode
             opcode = parseInt(rawOpcode.substring((rawOpcode.length - 2)));
             var c = rawOpcode.length >= 3 ? parseInt(rawOpcode.substring((rawOpcode.length - 3), (rawOpcode.length - 2))) : 0;
             var b = rawOpcode.length >= 4 ? parseInt(rawOpcode.substring((rawOpcode.length - 4), (rawOpcode.length - 3))) : 0;
@@ -106,7 +107,8 @@ function day7(inTape, userInput) {
             }
             case 3: {
                 // input
-                runTape[runTape[index + 1]] = userInput.shift();
+                runTape[runTape[index + 1]] = inputGiven ? userInput[1] : userInput[0]; //userInput.shift() as number;
+                inputGiven = true;
                 break;
             }
             case 4: {
@@ -333,6 +335,36 @@ function findHighestSignal1(newTape) {
     return max;
 }
 ;
+function findHighestSignal2(newTape) {
+    var e_7, _a;
+    var program = Object.assign([], newTape);
+    ;
+    var max = 0;
+    try {
+        for (var _b = __values(combinations(5, 9)), _c = _b.next(); !_c.done; _c = _b.next()) {
+            var _d = __read(_c.value, 5), a = _d[0], b = _d[1], c = _d[2], d = _d[3], e = _d[4];
+            var oa = day7(program, [a, 0]);
+            var ob = day7(program, [b, oa]);
+            var oc = day7(program, [c, ob]);
+            var od = day7(program, [d, oc]);
+            var oe = day7(program, [e, od]);
+            if (oe > max) {
+                max = oe;
+            }
+        }
+    }
+    catch (e_7_1) { e_7 = { error: e_7_1 }; }
+    finally {
+        try {
+            if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+        }
+        finally { if (e_7) throw e_7.error; }
+    }
+    return max;
+}
+;
 var highest1 = findHighestSignal1(tape);
 console.log("Pt 1: " + highest1);
+var highest2 = findHighestSignal2(tape);
+console.log("Pt 2: " + highest2);
 //# sourceMappingURL=main.js.map
