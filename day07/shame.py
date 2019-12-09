@@ -1,4 +1,4 @@
-# I couldn't figure out what the heck pt 2 wanted so I straight up ganked this
+# I couldn't figure out what the heck pt 2 wanted so I straight up ganked this so I can disect it when I have more time
 # https://github.com/xADDBx/Advent-of-Code/blob/master/Day%207/Day7_2.py
 import itertools
 
