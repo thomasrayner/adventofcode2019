@@ -5,6 +5,7 @@ export class intcodeProcessor {
     output:number[];
     paused:boolean;
     base:number;
+    done:boolean;
 
     constructor(tapeInput:number[], inputValue:number[]) {
         this.tape = tapeInput;
@@ -13,6 +14,7 @@ export class intcodeProcessor {
         this.output = [];
         this.paused = false;
         this.base = 0;
+        this.done = false;
     }
 
     getMode(position:number, mode:number) {
@@ -29,7 +31,7 @@ export class intcodeProcessor {
         }
     }
 
-    compute() {
+        compute() {
         var [p1, p2, p3, p1s, p2s, p3s] = [0, 0, 0, 0, 0, 0];   // initialize to avoid Typescript complaining about use before assignment
         while (this.index < this.tape.length) {
             var opcode = this.tape[this.index] % 100;
@@ -58,7 +60,7 @@ export class intcodeProcessor {
             catch {
                 // squash out of bounds error
             }
-
+            
             // computation functions
             switch (opcode) {
                 case 1: {   // addition
@@ -76,13 +78,17 @@ export class intcodeProcessor {
                         this.paused = true;
                         break;
                     }
+                    this.paused = false;
                     this.tape[p1s] = this.input.shift() as number;
+                    //console.debug({ 'index': this.index, 'instruction': this.tape[this.index], 'output': this.output, 'input': this.input});
+
                     this.index += 2;
                     break;
                 }
                 case 4: {   // output
                     this.output.push(p1);
                     this.index += 2;
+                    //console.debug({ 'index': this.index, 'instruction': this.tape[this.index], 'output': this.output, 'input': this.input});
                     break;
                 }
                 case 5: {   // jump to p2 if p1 != 0
@@ -110,8 +116,12 @@ export class intcodeProcessor {
                 }
                 case 99: {  // halt
                     this.paused = false;
+                    this.done = true;
                     return;
                 }
+            }
+            if (this.paused) {
+                break;
             }
         }
     }

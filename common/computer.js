@@ -8,6 +8,7 @@ var intcodeProcessor = /** @class */ (function () {
         this.output = [];
         this.paused = false;
         this.base = 0;
+        this.done = false;
     }
     intcodeProcessor.prototype.getMode = function (position, mode) {
         switch (mode) {
@@ -65,13 +66,16 @@ var intcodeProcessor = /** @class */ (function () {
                         this.paused = true;
                         break;
                     }
+                    this.paused = false;
                     this.tape[p1s] = this.input.shift();
+                    //console.debug({ 'index': this.index, 'instruction': this.tape[this.index], 'output': this.output, 'input': this.input});
                     this.index += 2;
                     break;
                 }
                 case 4: { // output
                     this.output.push(p1);
                     this.index += 2;
+                    //console.debug({ 'index': this.index, 'instruction': this.tape[this.index], 'output': this.output, 'input': this.input});
                     break;
                 }
                 case 5: { // jump to p2 if p1 != 0
@@ -99,11 +103,16 @@ var intcodeProcessor = /** @class */ (function () {
                 }
                 case 99: { // halt
                     this.paused = false;
+                    this.done = true;
                     return;
                 }
+            }
+            if (this.paused) {
+                break;
             }
         }
     };
     return intcodeProcessor;
 }());
 exports.intcodeProcessor = intcodeProcessor;
+//# sourceMappingURL=computer.js.map
