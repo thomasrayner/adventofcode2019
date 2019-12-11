@@ -1,6 +1,5 @@
 import { readFileSync } from 'fs';
 import { intcodeProcessor } from "..\\common\\computer";
-import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
 
 var filename = 'c:\\temp\\input11.txt';
 var input = readFileSync(filename).toString().trim().split(',').map(Number);
