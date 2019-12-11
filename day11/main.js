@@ -27,17 +27,18 @@ var paintBot = /** @class */ (function () {
         this.computer = new computer_1.intcodeProcessor(this.instructions, [this.currentColor]);
     }
     paintBot.prototype.paint = function () {
-        this.computer.compute();
+        // paint the square
+        var tSquare = new canvasSquare(this.currentPosition.x, this.currentPosition.y, this.currentPosition.c);
+        this.canvas.push(tSquare);
         while (!this.computer.done) {
-            // paint the square
-            var tSquare = new canvasSquare(this.currentPosition.x, this.currentPosition.y, this.currentPosition.c);
-            this.canvas.push(tSquare);
-            // get the next output
             this.computer.compute();
+            // get the next output
             var color = this.computer.output.shift();
             var turn = this.computer.output.shift();
-            this.currentPosition.c = color;
-            this.currentColor = color;
+            // paint the square
+            this.currentPosition.c = this.currentColor = color;
+            var tSquare = new canvasSquare(this.currentPosition.x, this.currentPosition.y, this.currentPosition.c);
+            this.canvas.push(tSquare);
             // go somewhere else next
             if (turn === 0) {
                 // turn left
@@ -71,11 +72,11 @@ var paintBot = /** @class */ (function () {
             }
             switch (this.currentOrientation) {
                 case 'up': {
-                    this.currentPosition.y--;
+                    this.currentPosition.y++;
                     break;
                 }
                 case 'down': {
-                    this.currentPosition.y++;
+                    this.currentPosition.y--;
                     break;
                 }
                 case 'right': {
@@ -87,8 +88,16 @@ var paintBot = /** @class */ (function () {
                     break;
                 }
             }
-            // go again
-            this.computer.input.push(this.currentColor);
+            var tx = this.currentPosition.x;
+            var ty = this.currentPosition.y;
+            var ta = [];
+            var nextColor = this.canvas.forEach(function (x) {
+                if (x.x == tx && x.y == ty) {
+                    ta.push(x);
+                }
+            });
+            nextColor = ta[ta.length - 1] == undefined ? 0 : ta[ta.length - 1].c;
+            this.computer.input.push(nextColor);
         }
         return this.canvas;
     };
@@ -98,7 +107,6 @@ var rook = new paintBot(input);
 var out = rook.paint();
 var unique = new Set();
 for (var i in out) {
-    // var xy = out[i].x.toString() + out[i].y.toString();
     var xy = out[i].getXY();
     if (!unique.has(xy)) {
         unique.add(xy);
