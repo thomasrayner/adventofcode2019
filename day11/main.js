@@ -105,12 +105,12 @@ var paintBot = /** @class */ (function () {
 }());
 var rook = new paintBot(input);
 var out = rook.paint();
-var unique = new Set();
+var unique = new Array;
 for (var i in out) {
     var xy = out[i].getXY();
-    if (!unique.has(xy)) {
-        unique.add(xy);
+    if (!unique.includes(xy)) {
+        unique.push(xy);
     }
 }
-console.log('Pt 1: ' + unique.size);
+console.log('Pt 1: ' + unique.length);
 //# sourceMappingURL=main.js.map
