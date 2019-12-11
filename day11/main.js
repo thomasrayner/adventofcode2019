@@ -37,6 +37,7 @@ var paintBot = /** @class */ (function () {
             var color = this.computer.output.shift();
             var turn = this.computer.output.shift();
             this.currentPosition.c = color;
+            this.currentColor = color;
             // go somewhere else next
             if (turn === 0) {
                 // turn left

@@ -53,6 +53,7 @@ class paintBot {
             var color = this.computer.output.shift() as number;
             var turn = this.computer.output.shift() as number;
             this.currentPosition.c = color;
+            this.currentColor = color;
 
             // go somewhere else next
             if (turn === 0) {
