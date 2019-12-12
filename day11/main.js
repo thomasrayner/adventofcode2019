@@ -16,9 +16,9 @@ var canvasSquare = /** @class */ (function () {
     return canvasSquare;
 }());
 var paintBot = /** @class */ (function () {
-    function paintBot(inst) {
+    function paintBot(inst, startColor) {
         this.instructions = inst;
-        this.currentColor = 0; // defaults to 0 for pt 1, 1 for pt 2
+        this.currentColor = startColor;
         this.currentPosition = new canvasSquare(0, 0, this.currentColor);
         this.currentOrientation = 'up';
         this.index = 0;
@@ -42,34 +42,47 @@ var paintBot = /** @class */ (function () {
             // go somewhere else next
             if (turn === 0) {
                 // turn left
-                if (this.currentOrientation === 'up') {
-                    this.currentOrientation = 'left';
-                }
-                else if (this.currentOrientation === 'left') {
-                    this.currentOrientation = 'down';
-                }
-                else if (this.currentOrientation === 'down') {
-                    this.currentOrientation = 'right';
-                }
-                else {
-                    this.currentOrientation = 'up';
+                switch (this.currentOrientation) {
+                    case 'up': {
+                        this.currentOrientation = 'left';
+                        break;
+                    }
+                    case 'left': {
+                        this.currentOrientation = 'down';
+                        break;
+                    }
+                    case 'down': {
+                        this.currentOrientation = 'right';
+                        break;
+                    }
+                    case 'right': {
+                        this.currentOrientation = 'up';
+                        break;
+                    }
                 }
             }
             else {
                 // turn right
-                if (this.currentOrientation === 'up') {
-                    this.currentOrientation = 'right';
-                }
-                else if (this.currentOrientation === 'right') {
-                    this.currentOrientation = 'down';
-                }
-                else if (this.currentOrientation === 'down') {
-                    this.currentOrientation = 'left';
-                }
-                else {
-                    this.currentOrientation = 'up';
+                switch (this.currentOrientation) {
+                    case 'up': {
+                        this.currentOrientation = 'right';
+                        break;
+                    }
+                    case 'right': {
+                        this.currentOrientation = 'down';
+                        break;
+                    }
+                    case 'down': {
+                        this.currentOrientation = 'left';
+                        break;
+                    }
+                    case 'left': {
+                        this.currentOrientation = 'up';
+                        break;
+                    }
                 }
             }
+            // move forward one square
             switch (this.currentOrientation) {
                 case 'up': {
                     this.currentPosition.y++;
@@ -88,6 +101,7 @@ var paintBot = /** @class */ (function () {
                     break;
                 }
             }
+            // find the next square color and use it as input for the next compute
             var tx = this.currentPosition.x;
             var ty = this.currentPosition.y;
             var ta = [];
@@ -103,18 +117,79 @@ var paintBot = /** @class */ (function () {
     };
     return paintBot;
 }());
-var rook = new paintBot(input);
-var out = rook.paint();
-var unique = [];
-for (var s in out) {
-    var square = out[s];
-    var matchSquare = unique.filter(function (i) { return square.x === i.x && square.y === i.y; });
+// pt 1
+var rook = new paintBot(input, 0); // part 1 starts on black square
+var rookOut = rook.paint();
+var rookUnique = [];
+for (var s in rookOut) {
+    var square = rookOut[s];
+    var matchSquare = rookUnique.filter(function (i) { return square.x === i.x && square.y === i.y; });
     if (matchSquare.length > 0) {
-        unique[unique.indexOf(matchSquare[0])].c = out[s].c;
+        continue;
+    }
+    rookUnique.push(rookOut[s]);
+}
+console.log('Pt 1: ' + rookUnique.length);
+// pt 2
+var bishop = new paintBot(input, 1); // part 2 starts on white square
+var bishopOut = bishop.paint();
+var bishopUnique = [];
+for (var s in bishopOut) {
+    var square = bishopOut[s];
+    var matchSquare = bishopUnique.filter(function (i) { return square.x === i.x && square.y === i.y; });
+    if (matchSquare.length > 0) {
+        bishopUnique[bishopUnique.indexOf(matchSquare[0])].c = bishopOut[s].c;
     }
     else {
-        unique.push(out[s]);
+        bishopUnique.push(bishopOut[s]);
     }
 }
-console.log('Pt 1: ' + unique.length);
+var minX = 0;
+var maxX = 0;
+var minY = 0;
+var maxY = 0;
+for (var s in bishopUnique) {
+    var square = bishopUnique[s];
+    if (square.x < minX) {
+        minX = square.x;
+    }
+    if (square.x > maxX) {
+        maxX = square.x;
+    }
+    if (square.y < minY) {
+        minY = square.y;
+    }
+    if (square.y > maxY) {
+        maxY = square.y;
+    }
+}
+// just in case the max of x or y is negative
+var absX = Math.abs(minX) > Math.abs(maxX) ? Math.abs(minX) : Math.abs(maxX);
+var absY = Math.abs(minY) > Math.abs(maxY) ? Math.abs(minY) : Math.abs(maxY);
+var codeCanvas = [];
+// init to black canvas
+for (var y = 0; y <= absY; y++) {
+    // rows
+    codeCanvas[y] = [];
+    for (var x = 0; x <= absX; x++) {
+        // columns
+        codeCanvas[y][x] = 0;
+    }
+}
+// update with our canvas squares which are in no particular order
+for (var s in bishopUnique) {
+    var square = bishopUnique[s];
+    codeCanvas[Math.abs(square.y)][Math.abs(square.x)] = square.c;
+}
+// draw it out
+console.log('Pt 2:');
+for (var y = 0; y <= absY; y++) {
+    // rows
+    var line = '';
+    for (var x = 0; x <= absX; x++) {
+        // columns
+        line += codeCanvas[y][x] === 0 ? '🖤' : '🤍';
+    }
+    console.log(line);
+}
 //# sourceMappingURL=main.js.map
