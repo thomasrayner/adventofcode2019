@@ -32,7 +32,7 @@ class paintBot {
 
     constructor (inst:number[], startColor:number) {
         this.instructions = inst;
-        this.currentColor = startColor;  // defaults to 0 for pt 1, 1 for pt 2
+        this.currentColor = startColor;
         this.currentPosition = new canvasSquare(0, 0, this.currentColor);
         this.currentOrientation = 'up';
         this.index = 0;
@@ -111,10 +111,7 @@ for (var s in rookOut) {
     var square = rookOut[s];
     var matchSquare = rookUnique.filter((i: canvasSquare) => square.x === i.x && square.y === i.y);
 
-    if (matchSquare.length > 0) {
-        continue;
-    }
-
+    if (matchSquare.length > 0) {continue;}
     rookUnique.push(rookOut[s]);
 }
 
@@ -156,12 +153,12 @@ var absY = Math.abs(minY) > Math.abs(maxY) ? Math.abs(minY) : Math.abs(maxY);
 
 var codeCanvas:number[][] = [];
 // init to black canvas
-for (var i = 0; i <= absY; i++) {
+for (var y = 0; y <= absY; y++) {
     // rows
-    codeCanvas[i] = [];
-    for (var j = 0; j <= absX; j++) {
+    codeCanvas[y] = [];
+    for (var x = 0; x <= absX; x++) {
         // columns
-        codeCanvas[i][j] = 0;
+        codeCanvas[y][x] = 0;
     }
 }
 
@@ -173,12 +170,12 @@ for (var s in bishopUnique) {
 
 // draw it out
 console.log('Pt 2:')
-for (var i = 0; i <= absY; i++) {
+for (var y = 0; y <= absY; y++) {
     // rows
     var line = '';
-    for (var j = 0; j <= absX; j++) {
+    for (var x = 0; x <= absX; x++) {
         // columns
-        line += codeCanvas[i][j] === 0 ? '🖤' : '🤍';
+        line += codeCanvas[y][x] === 0 ? '🖤' : '🤍';
     }
     console.log(line);
 }
