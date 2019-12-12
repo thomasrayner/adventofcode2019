@@ -18,7 +18,7 @@ var canvasSquare = /** @class */ (function () {
 var paintBot = /** @class */ (function () {
     function paintBot(inst) {
         this.instructions = inst;
-        this.currentColor = 0; // defaults to 0 for pt 1, 1 for pt 2
+        this.currentColor = 1; // defaults to 0 for pt 1, 1 for pt 2
         this.currentPosition = new canvasSquare(0, 0, this.currentColor);
         this.currentOrientation = 'up';
         this.index = 0;
@@ -116,5 +116,50 @@ for (var s in out) {
         unique.push(out[s]);
     }
 }
-console.log('Pt 1: ' + unique.length);
+// Uncomment below line for pt 1 output, don't forget to change starting square to *black*
+// console.log('Pt 1: ' + unique.length);
+// Uncomment below line for pt 2 output, don't forget to change starting square to *white*
+var minX = 0;
+var maxX = 0;
+var minY = 0;
+var maxY = 0;
+for (var s in unique) {
+    var square = unique[s];
+    if (square.x < minX) {
+        minX = square.x;
+    }
+    if (square.x > maxX) {
+        maxX = square.x;
+    }
+    if (square.y < minY) {
+        minY = square.y;
+    }
+    if (square.y > maxY) {
+        maxY = square.y;
+    }
+}
+var absX = Math.abs(minX) > Math.abs(maxX) ? Math.abs(minX) : Math.abs(maxX);
+var absY = Math.abs(minY) > Math.abs(maxY) ? Math.abs(minY) : Math.abs(maxY);
+var codeCanvas = [];
+// init to black canvas
+for (var i = 0; i <= absY; i++) {
+    codeCanvas[i] = [];
+    for (var j = 0; j <= absX; j++) {
+        codeCanvas[i][j] = 0;
+    }
+}
+// update with our canvas squares
+for (var s in unique) {
+    var square = unique[s];
+    codeCanvas[Math.abs(square.y)][Math.abs(square.x)] = square.c;
+}
+// draw it out
+console.log('Pt 2:\n');
+for (var i = 0; i <= absY; i++) {
+    var line = '';
+    for (var j = 0; j <= absX; j++) {
+        line += codeCanvas[i][j] === 0 ? '🖤' : '🤍';
+    }
+    console.log(line);
+}
 //# sourceMappingURL=main.js.map
