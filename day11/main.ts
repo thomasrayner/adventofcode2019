@@ -150,19 +150,22 @@ for (var s in bishopUnique) {
     if (square.y > maxY) {maxY = square.y}
 }
 
+// just in case the max of x or y is negative
 var absX = Math.abs(minX) > Math.abs(maxX) ? Math.abs(minX) : Math.abs(maxX);
 var absY = Math.abs(minY) > Math.abs(maxY) ? Math.abs(minY) : Math.abs(maxY);
 
 var codeCanvas:number[][] = [];
 // init to black canvas
 for (var i = 0; i <= absY; i++) {
+    // rows
     codeCanvas[i] = [];
     for (var j = 0; j <= absX; j++) {
+        // columns
         codeCanvas[i][j] = 0;
     }
 }
 
-// update with our canvas squares
+// update with our canvas squares which are in no particular order
 for (var s in bishopUnique) {
     var square = bishopUnique[s];
     codeCanvas[Math.abs(square.y)][Math.abs(square.x)] = square.c;
@@ -171,8 +174,10 @@ for (var s in bishopUnique) {
 // draw it out
 console.log('Pt 2:')
 for (var i = 0; i <= absY; i++) {
+    // rows
     var line = '';
     for (var j = 0; j <= absX; j++) {
+        // columns
         line += codeCanvas[i][j] === 0 ? '🖤' : '🤍';
     }
     console.log(line);
