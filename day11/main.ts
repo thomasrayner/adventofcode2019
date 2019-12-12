@@ -126,12 +126,17 @@ class paintBot {
 
 var rook = new paintBot(input);
 var out = rook.paint();
-var unique = new Array;
-for (var i in out) {
-    var xy = out[i].getXY();
-    if (!unique.includes(xy)) {
-        unique.push(xy);
+var unique:any = [];
+for (var s in out) {
+    var square = out[s];
+    var matchSquare = unique.filter((i: canvasSquare) => square.x === i.x && square.y === i.y);
+    if (matchSquare.length > 0) {
+        unique[unique.indexOf(matchSquare[0])].c = out[s].c;
+    }
+    else {
+        unique.push(out[s]);
     }
 }
+
 
 console.log('Pt 1: ' + unique.length);
