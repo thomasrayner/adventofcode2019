@@ -24,6 +24,7 @@ var intcodeProcessor = /** @class */ (function () {
         }
     };
     intcodeProcessor.prototype.compute = function () {
+        this.done = false;
         var _a = [0, 0, 0, 0, 0, 0], p1 = _a[0], p2 = _a[1], p3 = _a[2], p1s = _a[3], p2s = _a[4], p3s = _a[5]; // initialize to avoid Typescript complaining about use before assignment
         while (this.index < this.tape.length) {
             var opcode = this.tape[this.index] % 100;
@@ -107,7 +108,7 @@ var intcodeProcessor = /** @class */ (function () {
                     return;
                 }
             }
-            if (this.paused) {
+            if (this.paused || this.done) {
                 break;
             }
         }

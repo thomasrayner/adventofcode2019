@@ -1,13 +1,13 @@
 export class intcodeProcessor {
-    tape:number[];
-    input:number[];
-    index:number;
-    output:number[];
-    paused:boolean;
-    base:number;
-    done:boolean;
+    tape: number[];
+    input: number[];
+    index: number;
+    output: number[];
+    paused: boolean;
+    base: number;
+    done: boolean;
 
-    constructor(tapeInput:number[], inputValue:number[]) {
+    constructor(tapeInput: number[], inputValue: number[]) {
         this.tape = tapeInput;
         this.input = inputValue;
         this.index = 0;
@@ -17,7 +17,7 @@ export class intcodeProcessor {
         this.done = false;
     }
 
-    getMode(position:number, mode:number) {
+    getMode(position: number, mode: number) {
         switch (mode) {
             case 1: {
                 return position;
@@ -31,7 +31,8 @@ export class intcodeProcessor {
         }
     }
 
-        compute() {
+    compute() {
+        this.done = false;
         var [p1, p2, p3, p1s, p2s, p3s] = [0, 0, 0, 0, 0, 0];   // initialize to avoid Typescript complaining about use before assignment
         while (this.index < this.tape.length) {
             var opcode = this.tape[this.index] % 100;
@@ -60,7 +61,7 @@ export class intcodeProcessor {
             catch {
                 // squash out of bounds error
             }
-            
+
             // computation functions
             switch (opcode) {
                 case 1: {   // addition
@@ -120,7 +121,7 @@ export class intcodeProcessor {
                     return;
                 }
             }
-            if (this.paused) {
+            if (this.paused || this.done) {
                 break;
             }
         }
